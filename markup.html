@@ -1,0 +1,131 @@
+<!-- Main responsive container defining full width/height and overflow bounds -->
+<div
+    class="layout layout--col flex flex-col justify-between w-full h-full bg-white relative text-black overflow-hidden">
+
+    <svg class="absolute top-12 left-12 w-24 h-24 text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+        fill="currentColor">
+        <path
+            d="M13 14.725c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275zm-13 0c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275z" />
+    </svg>
+
+    <svg class="absolute bottom-32 right-12 w-24 h-24 text-gray-200 -scale-x-100" xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" fill="currentColor">
+        <path
+            d="M13 14.725c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275zm-13 0c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275z" />
+    </svg>
+
+    <div class="flex-1 flex flex-col justify-center items-center text-center px-16 z-10 break-words my-10 max-h-screen">
+
+        {%- if plugin.json_url == blank -%}
+        <p class="text-4xl font-bold">Setup Error:<br>Please configure your Magic Mirror JSON URL.</p>
+
+        {%- elsif plugin.json_url contains '/blob/' or plugin.json_url contains 'gist.github.com' -%}
+        <p class="text-4xl font-bold">Setup Error:<br>You used a GitHub HTML web link.<br>Please edit your recipe and
+            use the 'Raw' file URL.</p>
+
+        {%- else -%}
+
+        {%- assign current_hour = "now" | in_time_zone: plugin.time_zone | date: "%H" | plus: 0 -%}
+
+        {%- if current_hour >= 0 and current_hour < 12 -%} {%- assign active_category="morning" -%} {%- elsif
+            current_hour>= 12 and current_hour < 17 -%} {%- assign active_category="afternoon" -%} {%- else -%} {%-
+                assign active_category="evening" -%} {%- endif -%} {%- assign master_pool_str="" -%} {%- assign
+                loop_counter=0 -%} {%- for category in payload -%} {%- assign cat_key=category[0] -%} {%- assign
+                cat_arr=category[1] -%} {% comment %}Explicit Allow-List: Strictly enforce integration of ONLY the
+                active time threshold and safe fallback pools{% endcomment %} {%- if cat_key==active_category or
+                cat_key=="anytime" -%} {%- if cat_arr !=blank -%} {%- for item in cat_arr -%} {%- if loop_counter>= 200
+                -%}
+                {%- break -%}
+                {%- endif -%}
+
+                {% comment %}Bundle the quote and its exact source array key together{% endcomment %}
+                {%- assign quote_bundle = item | append: "~~~TRMNL_CAT~~~" | append: cat_key -%}
+
+                {% comment %}Use robust placement to avoid appending explicit null string objects{% endcomment %}
+                {%- if master_pool_str == "" -%}
+                {%- assign master_pool_str = quote_bundle -%}
+                {%- else -%}
+                {%- assign master_pool_str = master_pool_str | append: "~~~TRMNL_BOUND~~~" | append: quote_bundle -%}
+                {%- endif -%}
+
+                {%- assign loop_counter = loop_counter | plus: 1 -%}
+                {%- endfor -%}
+                {%- endif -%}
+
+                {%- endif -%}
+
+                {%- if loop_counter >= 200 -%}
+                {%- break -%}
+                {%- endif -%}
+                {%- endfor -%}
+
+                {%- if master_pool_str != "" -%}
+
+                {%- assign final_array = master_pool_str | split: "~~~TRMNL_BOUND~~~" -%}
+
+                {%- assign sampled_bundle = final_array | sample -%}
+
+                {%- if sampled_bundle != blank -%}
+
+                {%- assign bundle_parts = sampled_bundle | split: "~~~TRMNL_CAT~~~" -%}
+                {%- assign quote = bundle_parts[0] -%}
+                {%- assign category_label = bundle_parts[1] | capitalize -%}
+
+                {%- assign q_size = quote | size -%}
+
+                {%- if q_size > 115 -%}
+                {%- assign text_size = "text-3xl" -%}
+                {%- elsif q_size > 65 -%}
+                {%- assign text_size = "text-4xl" -%}
+                {%- elsif q_size > 32 -%}
+                {%- assign text_size = "text-5xl" -%}
+                {%- else -%}
+                {%- assign text_size = "text-6xl" -%}
+                {%- endif -%}
+
+                <p class="{{ text_size }} font-bold leading-tight tracking-tight">{{ quote | strip_html | newline_to_br
+                    }}</p>
+
+                {%- else -%}
+                <p class="text-4xl font-bold">Error: Sampled quote was blank.</p>
+                {%- endif -%}
+
+                {%- else -%}
+                <p class="text-4xl font-bold">No quotes found for category: {{ active_category }} or anytime.</p>
+                {%- endif -%}
+
+                {%- endif -%}
+    </div>
+
+    <div
+        class="h-16 w-full flex-shrink-0 flex justify-between items-center px-8 border-t-4 border-black bg-white relative">
+
+        <svg class="absolute inset-0 w-full h-full z-0" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="stipple" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="2" height="2" fill="#000000" />
+                </pattern>
+            </defs>
+            <rect x="0" y="0" width="100%" height="100%" fill="url(#stipple)" />
+        </svg>
+
+        <div class="z-10 bg-white px-3 py-1.5 flex items-center gap-2 border-2 border-black rounded shadow-sm">
+            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            <span class="font-black text-sm tracking-widest uppercase">Magic Mirror</span>
+        </div>
+
+        {%- if plugin.json_url != blank -%}
+        {%- if master_pool_str != blank -%}
+        <div class="z-10 bg-black text-white border-2 border-black px-4 py-1.5 rounded shadow-sm">
+            <span class="font-bold text-sm uppercase tracking-widest">{{ category_label }}</span>
+        </div>
+        {%- endif -%}
+        {%- endif -%}
+
+    </div>
+</div>

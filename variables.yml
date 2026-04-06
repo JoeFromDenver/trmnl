@@ -1,0 +1,12 @@
+variables:
+  - name: json_url
+    type: string
+    label: Magic Mirror JSON URL
+    description: "The raw link to your source compliments.json file."
+    help_text: "You MUST use a raw data link. Standard GitHub pages containing '/blob/' or HTML wrappers will explicitly crash the template parser and error out on the TRMNL device."
+    placeholder: "https://raw.githubusercontent.com/username/MagicMirror/main/modules/default/compliments/compliments.json"
+    
+  - name: time_zone
+    type: time_zone
+    label: Local Time Zone
+    description: "Your local timezone identifier. We natively invoke your selected Time Zone to correctly route Morning, Afternoon, and Evening threshold calculations."

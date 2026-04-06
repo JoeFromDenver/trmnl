@@ -81,3 +81,9 @@ TRMNL executes the backend `polling_url` API interpolator natively with simplifi
 * **Responsibilities:** 
   - Preserve the foundational blueprint (The Problem, The Technical Plan, Alternatives).
   - Document the architecture and Liquid logic decisions for future contributors.
+
+### Lessons Learned: TRMNL Liquid Caveats
+During development, we encountered critical rendering failures bridging TRMNL's Polling webhook into the Liquid template sandbox. The following constraints establish future architectural assumptions:
+1. **Implicit Root Injection:** TRMNL's Polling strategy does not package JSON responses inside an overarching `payload` dictionary. It flattens the fetched variables cleanly onto the global scope dynamically (e.g. mapping `{"anytime": []}` directly into the Liquid `{{ anytime }}` field variable).
+2. **Native Enumerable Arrays:** If the JSON endpoint contains a deep array structure, TRMNL seamlessly translates the array into a native Liquid equivalent out-of-the-box. TRMNL **does not** stringify the payload.
+3. **The Debugging Visual Illusion Trap:** Standard Liquid does not natively "pretty print" arrays. If you invoke `{{ anytime }}` directly into the document viewing interface, Liquid natively joins every item and outputs a massive concatenated string block. This visual output creates a powerful inverse illusion that TRMNL typecast the nested structure as a raw primitive `String`. Applying proprietary string filters like `parse_json` on these native Arrays strictly crashes the Liquid block evaluation, skipping the loop and dropping the view into a fallback error UI trap. Trust the native iteration syntax explicitly.

@@ -109,7 +109,8 @@
                 {%- endif -%}
             </div>
 
-            <!-- Footer Wrapper -->
+            {% comment %}
+            <!-- Footer Wrapper (Temporarily Disabled pending future refactor to bypass TRMNL CSS overlapping) -->
             <div class="w-full h-16 flex-shrink-0 flex justify-between items-center px-6 border-t-4 border-black z-10"
                 style="background-color: white; background-image: url('data:image/svg+xml;utf8,%3Csvg%20width=%224%22%20height=%224%22%20viewBox=%220%200%204%204%22%20xmlns=%22http://www.w3.org/2000/svg%22%3E%3Crect%20width=%222%22%20height=%222%22%20fill=%22%23000%22/%3E%3C/svg%3E'); background-repeat: repeat;">
                 <div class="bg-white px-3 py-1.5 flex items-center gap-2 border-2 border-black rounded shadow-sm z-10">
@@ -129,5 +130,6 @@
                 </div>
                 {%- endif -%}
             </div>
+            {% endcomment %}
 
         </div>

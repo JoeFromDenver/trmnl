@@ -62,7 +62,7 @@ To guarantee flawless Liquid traversal, this Recipe enforces strict adherence to
   - **Grid & Visual Layout:**
     - **Canvas Body:** A clean, container-bound flex interface with a centered primary responsive text area.
     - **Oversized Quotes:** Two explicitly sized (`width="120" height="120"`) hardcoded inline quotation mark SVGs natively positioned via classic absolute CSS positioning overriding TRMNL framework restrictions. To accurately align closing quote typographical bounds, the opening quote mirrors securely via inverted `-scale-x-100` path flipping avoiding baseline drifting mathematics.
-    - **Stippled SVG Footer:** A dedicated bottom bar explicitly masked via absolute native inline CSS covering the bounds securely utilizing an absolute 2-bit `#000000`/`#FFFFFF` inline SVG dot mask layout, bypassing the unpredictable legacy `.pattern-dots` CSS footprint entirely mathematically.
+    - **Stippled SVG Footer:** *(Currently commented out pending future refactoring)* The dedicated bottom bar and metadata badge components have been temporarily disabled due to aggressive TRMNL CSS sanitizer logic stripping inline pattern-dots and data-URI stipple implementations causing unpredictable overlaps.
     - **Footer Branding & Metadata:** Minimalist iconography alongside dynamic category badge UIs definitively matching the true array sampled UIs.
   
 #### [NEW] `/home/joeromeo/Documents/Antigravity/projects/trmnl/variables.yml`

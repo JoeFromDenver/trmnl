@@ -5,53 +5,25 @@
 
 {%- if current_hour >= 0 and current_hour < 12 -%} {%- assign active_category="morning" -%} {%- elsif current_hour>= 12
     and current_hour < 17 -%} {%- assign active_category="afternoon" -%} {%- else -%} {%- assign
-        active_category="evening" -%} {%- endif -%} {%- assign master_pool_str="" -%} {%- assign loop_counter=0 -%} {%-
-        for category in payload -%} {%- assign cat_key=category[0] -%} {%- assign cat_arr=category[1] -%} {%- if
-        cat_key==active_category or cat_key=="anytime" -%} {%- if cat_arr !=blank -%} {%- for item in cat_arr -%} {%- if
-        loop_counter>= 200 -%}
-        {%- break -%}
-        {%- endif -%}
-
-        {%- assign quote_bundle = item | append: "~~~TRMNL_CAT~~~" | append: cat_key -%}
-
-        {%- if master_pool_str == "" -%}
-        {%- assign master_pool_str = quote_bundle -%}
-        {%- else -%}
-        {%- assign master_pool_str = master_pool_str | append: "~~~TRMNL_BOUND~~~" | append: quote_bundle -%}
-        {%- endif -%}
-
-        {%- assign loop_counter = loop_counter | plus: 1 -%}
-        {%- endfor -%}
-        {%- endif -%}
-        {%- endif -%}
-
-        {%- if loop_counter >= 200 -%}
-        {%- break -%}
-        {%- endif -%}
-        {%- endfor -%}
-
-        {%- assign display_quote = "" -%}
-        {%- assign display_error = false -%}
-        {%- assign display_error_type = "" -%}
-
-        {%- if json_url == blank -%}
-        {%- assign display_error = true -%}
-        {%- assign display_error_type = "empty_url" -%}
-        {%- elsif json_url contains '/blob/' or json_url contains 'gist.github.com' -%}
-        {%- assign display_error = true -%}
-        {%- assign display_error_type = "github_html" -%}
-        {%- else -%}
-        {%- if master_pool_str != "" -%}
-        {%- assign final_array = master_pool_str | split: "~~~TRMNL_BOUND~~~" -%}
-        {%- assign sampled_bundle = final_array | sample -%}
-
-        {%- if sampled_bundle != blank -%}
-        {%- assign bundle_parts = sampled_bundle | split: "~~~TRMNL_CAT~~~" -%}
-        {%- assign display_quote = bundle_parts[0] -%}
-        {%- assign category_label = bundle_parts[1] | capitalize -%}
-
-        {%- assign q_size = display_quote | size -%}
-        {%- if q_size > 115 -%}
+        active_category="evening" -%} {%- endif -%} {%- assign master_pool_str="" -%} {%- if anytime !=blank -%} {%- for
+        item in anytime limit:100 -%} {%- assign quote_bundle=item | append: "~~~TRMNL_CAT~~~" | append: "anytime" -%}
+        {%- if master_pool_str=="" -%} {%- assign master_pool_str=quote_bundle -%} {%- else -%} {%- assign
+        master_pool_str=master_pool_str | append: "~~~TRMNL_BOUND~~~" | append: quote_bundle -%} {%- endif -%} {%-
+        endfor -%} {%- endif -%} {%- assign time_pool=blank -%} {%- if active_category=="morning" -%} {%- assign
+        time_pool=morning -%} {%- elsif active_category=="afternoon" -%} {%- assign time_pool=afternoon -%} {%- elsif
+        active_category=="evening" -%} {%- assign time_pool=evening -%} {%- endif -%} {%- if time_pool !=blank -%} {%-
+        for item in time_pool limit:100 -%} {%- assign quote_bundle=item | append: "~~~TRMNL_CAT~~~" | append:
+        active_category -%} {%- if master_pool_str=="" -%} {%- assign master_pool_str=quote_bundle -%} {%- else -%} {%-
+        assign master_pool_str=master_pool_str | append: "~~~TRMNL_BOUND~~~" | append: quote_bundle -%} {%- endif -%}
+        {%- endfor -%} {%- endif -%} {%- assign display_quote="" -%} {%- assign display_error=false -%} {%- assign
+        display_error_type="" -%} {%- if json_url==blank -%} {%- assign display_error=true -%} {%- assign
+        display_error_type="empty_url" -%} {%- elsif json_url contains '/blob/' or json_url contains 'gist.github.com'
+        -%} {%- assign display_error=true -%} {%- assign display_error_type="github_html" -%} {%- else -%} {%- if
+        master_pool_str !="" -%} {%- assign final_array=master_pool_str | split: "~~~TRMNL_BOUND~~~" -%} {%- assign
+        sampled_bundle=final_array | sample -%} {%- if sampled_bundle !=blank -%} {%- assign bundle_parts=sampled_bundle
+        | split: "~~~TRMNL_CAT~~~" -%} {%- assign display_quote=bundle_parts[0] -%} {%- assign
+        category_label=bundle_parts[1] | capitalize -%} {%- assign q_size=display_quote | size -%} {%- if q_size> 115
+        -%}
         {%- assign text_size = "text-3xl" -%}
         {%- elsif q_size > 65 -%}
         {%- assign text_size = "text-4xl" -%}

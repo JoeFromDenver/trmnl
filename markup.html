@@ -1,27 +1,66 @@
 {%- assign json_url = trmnl.plugin_settings.custom_fields_values.json_url -%}
-{%- assign time_zone = trmnl.plugin_settings.custom_fields_values.time_zone -%}
+{%- assign time_zone = trmnl.plugin_settings.custom_fields_values.time_zone | default: "America/New_York" -%}
 
 {%- assign current_hour = "now" | in_time_zone: time_zone | date: "%H" | plus: 0 -%}
 
 {%- if current_hour >= 0 and current_hour < 12 -%} {%- assign active_category="morning" -%} {%- elsif current_hour>= 12
     and current_hour < 17 -%} {%- assign active_category="afternoon" -%} {%- else -%} {%- assign
-        active_category="evening" -%} {%- endif -%} {%- assign master_pool_str="" -%} {%- if anytime !=blank -%} {%- for
-        item in anytime limit: 100 -%} {%- assign quote_bundle=item | append: "~~~TRMNL_CAT~~~anytime" -%} {%- assign
-        master_pool_str=master_pool_str | append: "~~~TRMNL_BOUND~~~" | append: quote_bundle -%} {%- endfor -%} {%-
-        endif -%} {%- assign time_pool=blank -%} {%- if active_category=="morning" -%} {%- assign time_pool=morning -%}
-        {%- elsif active_category=="afternoon" -%} {%- assign time_pool=afternoon -%} {%- elsif
-        active_category=="evening" -%} {%- assign time_pool=evening -%} {%- endif -%} {%- if time_pool !=blank -%} {%-
-        for item in time_pool limit: 100 -%} {%- assign quote_bundle=item | append: "~~~TRMNL_CAT~~~" | append:
-        active_category -%} {%- assign master_pool_str=master_pool_str | append: "~~~TRMNL_BOUND~~~" | append:
-        quote_bundle -%} {%- endfor -%} {%- endif -%} {%- assign display_quote="" -%} {%- assign display_error=false -%}
-        {%- assign display_error_type="" -%} {%- if json_url==blank -%} {%- assign display_error=true -%} {%- assign
-        display_error_type="empty_url" -%} {%- elsif json_url contains '/blob/' or json_url contains 'gist.github.com'
-        -%} {%- assign display_error=true -%} {%- assign display_error_type="github_html" -%} {%- else -%} {%- if
-        master_pool_str !="" -%} {%- assign safe_pool_str=master_pool_str | remove_first: "~~~TRMNL_BOUND~~~" -%} {%-
-        assign final_array=safe_pool_str | split: "~~~TRMNL_BOUND~~~" -%} {%- assign sampled_bundle=final_array | sample
-        -%} {%- if sampled_bundle !=blank -%} {%- assign bundle_parts=sampled_bundle | split: "~~~TRMNL_CAT~~~" -%} {%-
-        assign display_quote=bundle_parts[0] -%} {%- assign category_label=bundle_parts[1] | capitalize -%} {%- assign
-        q_size=display_quote | size -%} {%- if q_size> 115 -%}
+        active_category="evening" -%} {%- endif -%} {%- assign master_pool_str="" -%} <!-- We iterate natively over
+        the 'anytime' array (No parse_json needed!) -->
+        {%- if anytime != blank -%}
+        {%- for item in anytime limit: 100 -%}
+        {%- assign quote_bundle = item | append: "~~~TRMNL_CAT~~~anytime" -%}
+        {%- if master_pool_str == "" -%}
+        {%- assign master_pool_str = quote_bundle -%}
+        {%- else -%}
+        {%- assign master_pool_str = master_pool_str | append: "~~~TRMNL_BOUND~~~" | append: quote_bundle -%}
+        {%- endif -%}
+        {%- endfor -%}
+        {%- endif -%}
+
+        {%- assign time_pool = blank -%}
+        {%- if active_category == "morning" -%}
+        {%- assign time_pool = morning -%}
+        {%- elsif active_category == "afternoon" -%}
+        {%- assign time_pool = afternoon -%}
+        {%- elsif active_category == "evening" -%}
+        {%- assign time_pool = evening -%}
+        {%- endif -%}
+
+        <!-- We iterate natively over the 'time_pool' array -->
+        {%- if time_pool != blank -%}
+        {%- for item in time_pool limit: 100 -%}
+        {%- assign quote_bundle = item | append: "~~~TRMNL_CAT~~~" | append: active_category -%}
+        {%- if master_pool_str == "" -%}
+        {%- assign master_pool_str = quote_bundle -%}
+        {%- else -%}
+        {%- assign master_pool_str = master_pool_str | append: "~~~TRMNL_BOUND~~~" | append: quote_bundle -%}
+        {%- endif -%}
+        {%- endfor -%}
+        {%- endif -%}
+
+        {%- assign display_quote = "" -%}
+        {%- assign display_error = false -%}
+        {%- assign display_error_type = "" -%}
+
+        {%- if json_url == blank -%}
+        {%- assign display_error = true -%}
+        {%- assign display_error_type = "empty_url" -%}
+        {%- elsif json_url contains '/blob/' or json_url contains 'gist.github.com' -%}
+        {%- assign display_error = true -%}
+        {%- assign display_error_type = "github_html" -%}
+        {%- else -%}
+        {%- if master_pool_str != "" -%}
+        {%- assign final_array = master_pool_str | split: "~~~TRMNL_BOUND~~~" -%}
+        {%- assign sampled_bundle = final_array | sample -%}
+
+        {%- if sampled_bundle != blank -%}
+        {%- assign bundle_parts = sampled_bundle | split: "~~~TRMNL_CAT~~~" -%}
+        {%- assign display_quote = bundle_parts[0] -%}
+        {%- assign category_label = bundle_parts[1] | capitalize -%}
+        {%- assign q_size = display_quote | size -%}
+
+        {%- if q_size > 115 -%}
         {%- assign text_size = "text-3xl" -%}
         {%- elsif q_size > 65 -%}
         {%- assign text_size = "text-4xl" -%}

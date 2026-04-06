@@ -71,6 +71,11 @@ To guarantee flawless Liquid traversal, this Recipe enforces strict adherence to
   - Define a `string` URL input labeled "Magic Mirror JSON URL" so the user can easily link their payload source. This input will explicitly leverage TRMNL's `description`, `help_text`, and `placeholder` options to warn the user against two critical failure paths: providing a standard `.com/blob` GitHub HTML page, and providing a raw Gist URL that still contains the frozen commit hash (which permanently prevents future JSON updates from syncing).
   - Define a native `time_zone` dropdown selector which captures the standard TZ database name (e.g., `"America/New_York"` or `"Asia/Kolkata"`), enabling the `markup.html` template to seamlessly handle DST and fractional timezone offsets natively without writing custom integer operators.
 
+### Liquid Scope Namespaces
+TRMNL executes the backend `polling_url` API interpolator natively with simplified top-level variables (e.g., `{{ json_url }}`). However, inside the actual `markup.html` sandbox rendering engine, custom interface variables do not persist natively at the root. Liquid logic must explicitly evaluate the full globally namespaced object mapping to map the configuration dictionary and bypass false `nil` branch failures:
+- **`trmnl.plugin_settings.custom_fields_values.json_url`**
+- **`trmnl.plugin_settings.custom_fields_values.time_zone`**
+
 #### [EXISTING] `/home/joeromeo/Documents/Antigravity/projects/trmnl/DESIGN.md`
 * **Rationale:** This is the document you are currently reading. It establishes a permanent source of truth for the project. **CRITICAL AI INSTRUCTION:** Do not overwrite, regenerate, or recreate this file during the execution phase. This file already exists and serves exclusively as your blueprint.
 * **Responsibilities:** 

@@ -1,4 +1,7 @@
-{%- assign current_hour = "now" | in_time_zone: plugin.time_zone | date: "%H" | plus: 0 -%}
+{%- assign json_url = trmnl.plugin_settings.custom_fields_values.json_url -%}
+{%- assign time_zone = trmnl.plugin_settings.custom_fields_values.time_zone -%}
+
+{%- assign current_hour = "now" | in_time_zone: time_zone | date: "%H" | plus: 0 -%}
 
 {%- if current_hour >= 0 and current_hour < 12 -%} {%- assign active_category="morning" -%} {%- elsif current_hour>= 12
     and current_hour < 17 -%} {%- assign active_category="afternoon" -%} {%- else -%} {%- assign
@@ -31,10 +34,10 @@
         {%- assign display_error = false -%}
         {%- assign display_error_type = "" -%}
 
-        {%- if plugin.json_url == blank -%}
+        {%- if json_url == blank -%}
         {%- assign display_error = true -%}
         {%- assign display_error_type = "empty_url" -%}
-        {%- elsif plugin.json_url contains '/blob/' or plugin.json_url contains 'gist.github.com' -%}
+        {%- elsif json_url contains '/blob/' or json_url contains 'gist.github.com' -%}
         {%- assign display_error = true -%}
         {%- assign display_error_type = "github_html" -%}
         {%- else -%}

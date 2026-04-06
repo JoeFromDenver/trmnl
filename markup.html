@@ -1,20 +1,23 @@
 <!-- Main responsive container defining full width/height and overflow bounds -->
-<div
-    class="layout layout--col flex flex-col justify-between w-full h-full bg-white relative text-black overflow-hidden">
+<div class="layout layout--col flex flex-col justify-between w-full h-full bg-white relative text-black overflow-hidden"
+    style="position: relative;">
 
-    <svg class="absolute top-12 left-12 w-24 h-24 text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-        fill="currentColor">
+    <svg style="position: absolute; top: 1.5rem; left: 1.5rem; z-index: 0;" width="120" height="120" fill="#E5E7EB"
+        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path
             d="M13 14.725c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275zm-13 0c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275z" />
     </svg>
 
-    <svg class="absolute bottom-32 right-12 w-24 h-24 text-gray-200 -scale-x-100" xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24" fill="currentColor">
-        <path
-            d="M13 14.725c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275zm-13 0c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275z" />
+    <svg style="position: absolute; bottom: 5rem; right: 1.5rem; z-index: 0;" width="120" height="120" fill="#E5E7EB"
+        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <g transform="scale(-1, 1) translate(-24, 0)">
+            <path
+                d="M13 14.725c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275zm-13 0c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275z" />
+        </g>
     </svg>
 
-    <div class="flex-1 flex flex-col justify-center items-center text-center px-16 z-10 break-words my-10 max-h-screen">
+    <div class="flex-1 flex flex-col justify-center items-center text-center px-16 z-10 break-words my-10 max-h-screen"
+        style="max-height: 90vh;">
 
         {%- if plugin.json_url == blank -%}
         <p class="text-4xl font-bold">Setup Error:<br>Please configure your Magic Mirror JSON URL.</p>
@@ -83,8 +86,8 @@
                 {%- assign text_size = "text-6xl" -%}
                 {%- endif -%}
 
-                <p class="{{ text_size }} font-bold leading-tight tracking-tight">{{ quote | strip_html | newline_to_br
-                    }}</p>
+                <p class="{{ text_size }} font-bold leading-tight tracking-tight" style="line-height: 1.2;">{{ quote |
+                    strip_html | newline_to_br }}</p>
 
                 {%- else -%}
                 <p class="text-4xl font-bold">Error: Sampled quote was blank.</p>
@@ -97,10 +100,11 @@
                 {%- endif -%}
     </div>
 
-    <div
-        class="h-16 w-full flex-shrink-0 flex justify-between items-center px-8 border-t-4 border-black bg-white relative">
+    <div class="h-16 w-full flex-shrink-0 flex justify-between items-center px-8 border-t-4 border-black bg-white relative"
+        style="position: relative; height: 4rem; overflow: hidden;">
 
-        <svg class="absolute inset-0 w-full h-full z-0" xmlns="http://www.w3.org/2000/svg">
+        <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;"
+            xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <pattern id="stipple" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
                     <rect x="0" y="0" width="2" height="2" fill="#000000" />
@@ -109,9 +113,10 @@
             <rect x="0" y="0" width="100%" height="100%" fill="url(#stipple)" />
         </svg>
 
-        <div class="z-10 bg-white px-3 py-1.5 flex items-center gap-2 border-2 border-black rounded shadow-sm">
-            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
+        <div class="z-10 bg-white px-3 py-1.5 flex items-center gap-2 border-2 border-black rounded shadow-sm"
+            style="position: relative; z-index: 10; background: white;">
+            <svg class="w-5 h-5 flex-shrink-0" style="width: 1.25rem; height: 1.25rem;" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                 <line x1="8" y1="21" x2="16" y2="21"></line>
                 <line x1="12" y1="17" x2="12" y2="21"></line>
@@ -121,7 +126,8 @@
 
         {%- if plugin.json_url != blank -%}
         {%- if master_pool_str != blank -%}
-        <div class="z-10 bg-black text-white border-2 border-black px-4 py-1.5 rounded shadow-sm">
+        <div class="z-10 bg-black text-white border-2 border-black px-4 py-1.5 rounded shadow-sm"
+            style="position: relative; z-index: 10; background: black; color: white;">
             <span class="font-bold text-sm uppercase tracking-widest">{{ category_label }}</span>
         </div>
         {%- endif -%}

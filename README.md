@@ -2,7 +2,7 @@
 
 A TRMNL recipe that brings the classic "Magic Mirror" compliments logic directly to your e-ink display. The plugin intelligently cycles through dynamic quotes and compliments based on the current time of day (Morning, Afternoon, Evening), randomly sampling from the available pool just like the original Magic Mirror module.
 
-![Magic Mirror Preview](Magic Mirror Example.png)
+![Magic Mirror Preview](Magic%20Mirror%20Example.png)
 
 ## For Users: How to Use
 
